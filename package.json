@@ -1,0 +1,18 @@
+{
+  "name": "ad-service",
+  "version": "1.0.0",
+  "description": "Service module for displaying advertisements.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "/dist"
+  ],
+  "scripts": {
+    "test": "test"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^4.6.4"
+  }
+}
