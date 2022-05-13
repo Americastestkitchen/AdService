@@ -14,5 +14,14 @@
   "license": "ISC",
   "devDependencies": {
     "typescript": "^4.6.4"
-  }
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Americastestkitchen/AdService.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Americastestkitchen/AdService/issues"
+  },
+  "homepage": "https://github.com/Americastestkitchen/AdService#readme"
 }
