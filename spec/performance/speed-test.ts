@@ -1,4 +1,4 @@
-import AdServer from "./ad-server";
+import AdServer from "../../src/ad-server";
 
 export const after = () => {
   perfLog('after')

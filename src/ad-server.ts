@@ -1,4 +1,3 @@
-import type { User } from "./types"
 import PianoAdapter from "./piano-adapter.js"
 
 declare global {
@@ -31,7 +30,7 @@ export default class AdServer {
     thirdPartyCallbacks?:(()=> void)[];
     matchers?:string[];
     tags?:string[];
-    user:User;
+    user:{};
     adServicer?: PianoAdapter;
     constructor({
       afterAdRender = [],
@@ -52,6 +51,19 @@ export default class AdServer {
       this.adServicer = this.setAdapter(adServicer);
     }
 
+    /**
+     * Sets up the adapter for our Ad Service
+     * Adapters api:
+     * To render an template it REQUIRES an init() method
+     * To interact with third-party services the adapter constructor REQUIRES an interface to receive an array of callbacks.
+     * To match on custom variables it MAY have tags, matchers, or user-state
+     * Lifecycle methods can be fired from the AdServer class or passed through to the Adapter.
+     *
+     * @remarks
+     * Piano lifecycle methods lives inside the window.tp object so we have to pass through callbacks.
+     * @param adServicer
+     * @returns Adapter Class
+     */
     setAdapter(adServicer):PianoAdapter{
       const pianoConfig =   {
         afterRenderCallbacks: this.afterAdRender,
@@ -73,6 +85,10 @@ export default class AdServer {
       }
     }
 
+    /**
+     * @remarks
+     * These methods are private and should be only called through #dispatchAd
+     */
     executeBeforeAdInit():void {
       this.beforeAdInit.forEach((cb) => cb());
     }
@@ -83,28 +99,20 @@ export default class AdServer {
       this.afterAdInit.forEach((cb) => cb());
     }
 
-    setUser():User{
-        return {
-            aid: this.getAid(),
-            token: this.getUserToken(),
-        }
+    /**
+     * Gathers needed properties and creates a configuration obj
+     *
+     * @remarks
+     * The user data could come from context or it could come from
+     * @returns User
+     */
+    setUser(){
+      return {};
     }
 
-    getAid() {
-        //This will be set on the Dry.rb or User Context
-        return "P3MUmmU9pu";
-      }
-
-    getUserToken():string{
-        // function getCookie(name) {
-        //   var c = document.cookie.match("(^|;)\\s*" + name + "\\s*=\\s*([^;]+)");
-        //   if (c && c.length > 0) return c.pop();
-        //   else return null;
-        // }
-        // return getCookie("user_token");
-        return "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY3RpdmVfbWVtYmVyc2hpcHMiOlsiY2lvIiwiY2NvIiwiYXRrIiwiY29va2Jvb2tfY29sbGVjdGlvbiIsInNjaG9vbCJdLCJhY3RpdmVfcmVnaXN0cmF0aW9ucyI6WyJjaW8iLCJjY28iLCJhdGsiLCJzY2hvb2wiXSwiYXVkIjoiYW1lcmljYW5vMTIzIiwiY2FuY2VsbGVkX21lbWJlcnNoaXBzIjpbXSwiZGZwX21lbWJlcnNoaXBfc3RyaW5nIjoiYWxsX2FjY2VzcyIsImVtYWlsIjoicm9tYW4udHVybmVyQGFtZXJpY2FzdGVzdGtpdGNoZW4uY29tIiwiZXhwIjoxNjUxNjE1MTAwLCJleHRlcm5hbF9pZCI6bnVsbCwiZmlyc3RfbmFtZSI6IlJvbWFuIiwiaWF0IjoxNjUxNjAwNzAwLCJpZCI6MTA5MjE4NzUsImlzcyI6ImFtZXJpY2FzdGVzdGtpdGNoZW4uY29tIiwianRpIjoiODA2MjYyMTJlNzljMzQ1Y2IwOTBiNmEzNmMwMTZmODYiLCJsYXN0X25hbWUiOiJUdXJuZXIiLCJzZWdtZW50IjoibXVsdGlzaXRlIiwicGFja2FnZV9uYW1lIjoiTXVsdGktU2l0ZSBNZW1iZXJzaGlwIiwicGlhbm9fYWN0aXZlX21lbWJlcnNoaXBzIjoiW1wiY2lvXCIsXCJjY29cIixcImF0a1wiLFwiY29va2Jvb2tfY29sbGVjdGlvblwiLFwic2Nob29sXCJdIiwicGlhbm9fYWN0aXZlX3JlZ2lzdHJhdGlvbnMiOiJbXCJjaW9cIixcImNjb1wiLFwiYXRrXCIsXCJzY2hvb2xcIl0iLCJwaWFub19jYW5jZWxsZWRfbWVtYmVyc2hpcHMiOiJbXSIsInBpYW5vX3NjaG9vbF9zZWdtZW50IjoiYWN0aXZlX3NlbGYiLCJwaWFub19zZWdtZW50IjoibXVsdGlzaXRlIiwicm9sZSI6ImFkbWluIiwic3ViIjoiMTA5MjE4NzUiLCJzdXJ2ZXkiOnsiaWQiOm51bGwsIm5hbWUiOm51bGwsImxvY2F0aW9uIjpudWxsLCJhY3RpdmVBdCI6bnVsbCwidmlld2VkQXQiOm51bGwsImNvbXBsZXRlZEF0IjpudWxsLCJjb21wbGV0aW9uVHlwZSI6bnVsbCwiZWxpZ2libGUiOmZhbHNlfSwiaWRfZGlnZXN0IjoiYjhlNGJlYzY4ZDliM2Y0Y2M1NGQ0NTk2MDIxZDM4YmYxMjY3Njk0OSJ9.7gKRyggl9fWbPazuy6UtB8IwiGF9V98wAU8fC_T7hYs";
-    }
-
+    /**
+     * Execute advertisement and lifecycle methods.
+     */
     dispatchAd(){
         this.executeBeforeAdInit();
         this.adServicer.init();

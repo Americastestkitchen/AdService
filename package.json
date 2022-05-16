@@ -15,7 +15,6 @@
   "devDependencies": {
     "typescript": "^4.6.4"
   },
-  "dependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Americastestkitchen/AdService.git"
