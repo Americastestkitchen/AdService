@@ -4,6 +4,9 @@
 
 We are leveraging npm's install with a github url.
 
+Espresso Implementation add 
+"ad-service": "git+https://github.com/Americastestkitchen/AdService.git",
+and yarn
 
 ```shell
 npm install git+https://github.com/Americastestkitchen/AdService.git

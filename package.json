@@ -1,24 +1,29 @@
 {
-  "name": "ad-service",
+  "name": "adservice",
   "version": "1.0.0",
-  "description": "Service module for displaying advertisements.",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "files": [
-    "/dist"
-  ],
-  "scripts": {
-    "test": "test"
-  },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
+  "description": "## Installation",
+  "main": "index.js",
+  "dependencies": {
     "typescript": "^4.6.4"
+  },
+  "devDependencies": {
+    "ts-loader": "^9.3.0",
+    "webpack": "^5.72.1",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.9.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "local": "webpack-dev-server ./src/index.ts ./dist/bundle.js",
+    "webpack": "webpack ./src/index.ts && npm run local"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Americastestkitchen/AdService.git"
   },
+  "author": "",
+  "license": "ISC",
   "bugs": {
     "url": "https://github.com/Americastestkitchen/AdService/issues"
   },

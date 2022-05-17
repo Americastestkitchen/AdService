@@ -1,4 +1,5 @@
-import PianoAdapter from "./piano-adapter.js"
+import { pianoSDK } from './piano/index';
+import PianoAdapter from "./piano-adapter";
 
 declare global {
   interface Window {
@@ -14,6 +15,9 @@ declare global {
   }
 }
 
+if (pianoSDK) {
+  console.log('sdk Loaded');
+}
 
 /**
  *

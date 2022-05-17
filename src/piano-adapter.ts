@@ -168,6 +168,7 @@ export default class PianoAdapter {
          */
         async function trackMixpanel({action, status, params, customParams: {incode,clickdomain} }){
           let {url} = await JSON.parse(params)
+          // TODO: change 172 to support subdomains
           const [, location = "homepage"] = url.split(":5500/")
           window.mixpanel.track(action, {incode, status, location, type: clickdomain})
         }
@@ -247,10 +248,12 @@ export default class PianoAdapter {
        *
        * @returns PianoConfig
        */
+
+      // debug if non prod
       getConfigProperties(): PianoConfig {
         return {
           setAid: this.user.aid,
-          setDebug: false,
+          setDebug: true,
           setEndpoint: "https://buy.tinypass.com/api/v3",
           setExternalJWT: this.user.token,
           setUsePianoIdUserProvider: true,
