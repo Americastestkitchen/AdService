@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AdServer = void 0;
 const piano_adapter_1 = require("./piano-adapter");
 /**
  *
@@ -92,5 +93,5 @@ class AdServer {
         this.executeAfterAdInit();
     }
 }
-exports.default = AdServer;
+exports.AdServer = AdServer;
 //# sourceMappingURL=index.js.map

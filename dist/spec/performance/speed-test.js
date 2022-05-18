@@ -47,7 +47,7 @@ const mixpanelTrackPresented = {
     service: "mixpanel",
     action: "MEMBERSHIP_BLOCK",
 };
-const piano = new index_1.default({
+const piano = new index_1.AdServer({
     afterAdInit: [exports.after, lpa],
     afterAdRender: [exports.afterRender, lpa],
     beforeAdInit: [exports.before, lpa],

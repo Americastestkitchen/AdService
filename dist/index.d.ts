@@ -19,7 +19,7 @@ declare global {
  *  .init() and takes the lifecycle methods along with matchers/tags.
  *
  */
-export default class AdServer {
+declare class AdServer {
     afterAdRender?: (() => void)[];
     afterAdInit?: (() => void)[];
     beforeAdInit?: (() => void)[];
@@ -71,3 +71,4 @@ export default class AdServer {
      */
     dispatchAd(): void;
 }
+export { AdServer };

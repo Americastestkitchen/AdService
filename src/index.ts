@@ -22,7 +22,7 @@ declare global {
  *
  */
 
-export default class AdServer {
+class AdServer {
     afterAdRender?:(() => void)[];
     afterAdInit?:(() => void)[];
     beforeAdInit?:(() => void)[];
@@ -118,3 +118,5 @@ export default class AdServer {
         this.executeAfterAdInit();
     }
 }
+
+export { AdServer }
