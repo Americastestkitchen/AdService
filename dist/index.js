@@ -1,4 +1,6 @@
-import PianoAdapter from "./piano-adapter";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const piano_adapter_1 = require("./piano-adapter");
 /**
  *
  *  When we decide to ad a new ad service we will have to change the type of adServicer
@@ -6,7 +8,15 @@ import PianoAdapter from "./piano-adapter";
  *  .init() and takes the lifecycle methods along with matchers/tags.
  *
  */
-export default class AdServer {
+class AdServer {
+    afterAdRender;
+    afterAdInit;
+    beforeAdInit;
+    thirdPartyCallbacks;
+    matchers;
+    tags;
+    user;
+    adServicer;
     constructor({ afterAdRender = [], afterAdInit = [], beforeAdInit = [], matchers = [], thirdPartyCallbacks = [], tags = [], adServicer, }) {
         this.afterAdInit = afterAdInit;
         this.afterAdRender = afterAdRender;
@@ -40,13 +50,13 @@ export default class AdServer {
         };
         switch (adServicer) {
             case "piano": {
-                return new PianoAdapter(pianoConfig);
+                return new piano_adapter_1.default(pianoConfig);
             }
             case "atk": {
                 //configure in house AdService
             }
             default: {
-                return new PianoAdapter(pianoConfig);
+                return new piano_adapter_1.default(pianoConfig);
             }
         }
     }
@@ -82,4 +92,5 @@ export default class AdServer {
         this.executeAfterAdInit();
     }
 }
+exports.default = AdServer;
 //# sourceMappingURL=index.js.map

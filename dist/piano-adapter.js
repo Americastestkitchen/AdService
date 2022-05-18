@@ -1,22 +1,13 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _PianoAdapter_instances, _PianoAdapter_getAid, _PianoAdapter_getUserToken;
-import "./piano";
-export default class PianoAdapter {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+require("./piano");
+class PianoAdapter {
+    afterRenderCallbacks;
+    thirdPartyCallbacks;
+    tp;
+    user;
+    result;
     constructor({ thirdPartyCallbacks = [], afterRenderCallbacks = [], matchers = [], tags = [], user }) {
-        _PianoAdapter_instances.add(this);
         this.tp = window.tp || [];
         this.user = this.setUser(user);
         this.setEnvConfig();
@@ -27,6 +18,40 @@ export default class PianoAdapter {
             tags = [tags];
         }
         this.setTags(tags);
+    }
+    /**
+     * Returns the AID based on the current url
+     */
+    #getAid() {
+        const [subdomain, domain] = window.location.hostname.split('.');
+        if (subdomain === 'www') {
+            return {
+                "americastestkitchen": "o8it4JKTpu",
+                "cooksillustrated": "0l4CXRBBpu",
+                "cookscountry": "vRqttsu1pu",
+            }[domain];
+        }
+        else {
+            return {
+                "americastestkitchen": "P3MUmmU9pu",
+                "cooksillustrated": "CLRfAMqqpu",
+                "cookscountry": "rkIgdPatpu",
+            }[domain];
+        }
+        /**
+         * example implementation static aid
+         */
+        // return "P3MUmmU9pu";
+    }
+    /**
+     * Retrieves the user token from cookies or from a user context.
+     */
+    #getUserToken() {
+        var c = document.cookie.match("(^|;)\\s*user_token\\s*=\\s*([^;]+)");
+        if (c && c.length > 0)
+            return c.pop();
+        else
+            return null;
     }
     /**
      * Sets required user fields to execute a piano experience.
@@ -42,8 +67,8 @@ export default class PianoAdapter {
      */
     setUser(user) {
         return {
-            aid: __classPrivateFieldGet(this, _PianoAdapter_instances, "m", _PianoAdapter_getAid).call(this),
-            token: __classPrivateFieldGet(this, _PianoAdapter_instances, "m", _PianoAdapter_getUserToken).call(this),
+            aid: this.#getAid(),
+            token: this.#getUserToken(),
         };
     }
     init() {
@@ -136,30 +161,26 @@ export default class PianoAdapter {
          *   document.getElementById("mixpanel-params").click();
          * </div>
          */
-        function trackMixpanel({ action, status, params, customParams: { incode, clickdomain } }) {
-            return __awaiter(this, void 0, void 0, function* () {
-                let { url } = yield JSON.parse(params);
-                // TODO: change 172 to support subdomains
-                const [, location = "homepage"] = url.split(":5500/");
-                window.mixpanel.track(action, { incode, status, location, type: clickdomain });
-            });
+        async function trackMixpanel({ action, status, params, customParams: { incode, clickdomain } }) {
+            let { url } = await JSON.parse(params);
+            // TODO: change 172 to support subdomains
+            const [, location = "homepage"] = url.split(":5500/");
+            window.mixpanel.track(action, { incode, status, location, type: clickdomain });
         }
         switch (status) {
             case 'Accepted': {
                 this.tp.push(["addHandler", "customEvent", function (event) {
-                        if ((event === null || event === void 0 ? void 0 : event.eventName) !== 'sign-up-button')
+                        if (event?.eventName !== 'sign-up-button')
                             return;
                         trackMixpanel({ action, status, params: event.params.params, customParams: event.params });
                     }]);
                 break;
             }
             case 'Presented': {
-                this.tp.push(["addHandler", "customEvent", function (event) {
-                        return __awaiter(this, void 0, void 0, function* () {
-                            if ((event === null || event === void 0 ? void 0 : event.eventName) !== 'presented')
-                                return;
-                            trackMixpanel({ action, status, params: event.params.params, customParams: event.params });
-                        });
+                this.tp.push(["addHandler", "customEvent", async function (event) {
+                        if (event?.eventName !== 'presented')
+                            return;
+                        trackMixpanel({ action, status, params: event.params.params, customParams: event.params });
                     }]);
                 break;
             }
@@ -259,31 +280,5 @@ export default class PianoAdapter {
         });
     }
 }
-_PianoAdapter_instances = new WeakSet(), _PianoAdapter_getAid = function _PianoAdapter_getAid() {
-    const [subdomain, domain] = window.location.hostname.split('.');
-    if (subdomain === 'www') {
-        return {
-            "americastestkitchen": "o8it4JKTpu",
-            "cooksillustrated": "0l4CXRBBpu",
-            "cookscountry": "vRqttsu1pu",
-        }[domain];
-    }
-    else {
-        return {
-            "americastestkitchen": "P3MUmmU9pu",
-            "cooksillustrated": "CLRfAMqqpu",
-            "cookscountry": "rkIgdPatpu",
-        }[domain];
-    }
-    /**
-     * example implementation static aid
-     */
-    // return "P3MUmmU9pu";
-}, _PianoAdapter_getUserToken = function _PianoAdapter_getUserToken() {
-    var c = document.cookie.match("(^|;)\\s*user_token\\s*=\\s*([^;]+)");
-    if (c && c.length > 0)
-        return c.pop();
-    else
-        return null;
-};
+exports.default = PianoAdapter;
 //# sourceMappingURL=piano-adapter.js.map

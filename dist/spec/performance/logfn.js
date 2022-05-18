@@ -1,12 +1,18 @@
-export const after = () => {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.before = exports.afterRender = exports.after = void 0;
+const after = () => {
     perfLog('after');
 };
-export const afterRender = () => {
+exports.after = after;
+const afterRender = () => {
     perfLog('afterRender');
 };
-export const before = () => {
+exports.afterRender = afterRender;
+const before = () => {
     perfLog('before');
 };
+exports.before = before;
 const perfLog = (title) => {
     const log = localStorage.getItem('perfLog');
     const n = localStorage.getItem('runCount');

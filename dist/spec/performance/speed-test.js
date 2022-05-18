@@ -1,13 +1,19 @@
-import AdServer from "../../index";
-export const after = () => {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.before = exports.afterRender = exports.after = void 0;
+const index_1 = require("../../index");
+const after = () => {
     perfLog('after');
 };
-export const afterRender = () => {
+exports.after = after;
+const afterRender = () => {
     perfLog('afterRender');
 };
-export const before = () => {
+exports.afterRender = afterRender;
+const before = () => {
     perfLog('before');
 };
+exports.before = before;
 const perfLog = (title) => {
     const log = localStorage.getItem('perfLog');
     const n = localStorage.getItem('runCount');
@@ -41,10 +47,10 @@ const mixpanelTrackPresented = {
     service: "mixpanel",
     action: "MEMBERSHIP_BLOCK",
 };
-const piano = new AdServer({
-    afterAdInit: [after, lpa],
-    afterAdRender: [afterRender, lpa],
-    beforeAdInit: [before, lpa],
+const piano = new index_1.default({
+    afterAdInit: [exports.after, lpa],
+    afterAdRender: [exports.afterRender, lpa],
+    beforeAdInit: [exports.before, lpa],
     matchers: multiSite,
     thirdPartyCallbacks: [mixpanelTrackAccepted, mixpanelTrackPresented],
     //tags: [["sports", "breaking-news", "premium", "Alex is cool"]],

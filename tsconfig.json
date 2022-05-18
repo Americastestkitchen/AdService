@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "module": "esnext",
-    "target": "es2015",
+    "module": "commonjs",
+    "target": "ESNext",
     "declaration": true,
     "outDir": "./dist",
     "sourceMap": true,
@@ -11,5 +11,4 @@
     "lib": ["ES2017", "DOM"]
   },
   "include": ["src/**/*"],
-  "exclude": ["index.html"]
 }
