@@ -1,13 +1,14 @@
 {
   "compilerOptions": {
     "module": "esnext",
-    "target": "es2020",
+    "target": "es2015",
     "declaration": true,
     "outDir": "./dist",
     "sourceMap": true,
     "allowJs": true,
     "rootDir": "src",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "lib": ["ES2017", "DOM"]
   },
   "include": ["src/**/*"],
   "exclude": ["index.html"]
