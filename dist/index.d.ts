@@ -40,7 +40,7 @@ export default class AdServer {
     /**
      * Sets up the adapter for our Ad Service
      * Adapters api:
-     * To render an template it REQUIRES an init() method
+     * To render a template it REQUIRES an init() method
      * To interact with third-party services the adapter constructor REQUIRES an interface to receive an array of callbacks.
      * To match on custom variables it MAY have tags, matchers, or user-state
      * Lifecycle methods can be fired from the AdServer class or passed through to the Adapter.

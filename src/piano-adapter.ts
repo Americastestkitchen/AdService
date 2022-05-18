@@ -1,4 +1,5 @@
 import type { User, PianoConfig } from "./types"
+import "./piano";
 
 export default class PianoAdapter {
     afterRenderCallbacks?:(()=> void)[];
@@ -30,20 +31,25 @@ export default class PianoAdapter {
        * Returns the AID based on the current url
        */
       #getAid(){
-        const [subdomain, domain] = window.location.hostname.split('.')
-        if(subdomain === 'www'){
-          return {
-            "americastestkitchen": "o8it4JKTpu",
-            "cooksillustrated": "0l4CXRBBpu",
-            "cookscountry": "vRqttsu1pu",
-          }[domain]
-        } else {
-          return {
-            "americastestkitchen": "P3MUmmU9pu",
-            "cooksillustrated": "CLRfAMqqpu",
-            "cookscountry": "rkIgdPatpu",
-          }[domain]
-        }
+        // const [subdomain, domain] = window.location.hostname.split('.')
+        // if(subdomain === 'www'){
+        //   return {
+        //     "americastestkitchen": "o8it4JKTpu",
+        //     "cooksillustrated": "0l4CXRBBpu",
+        //     "cookscountry": "vRqttsu1pu",
+        //   }[domain]
+        // } else {
+        //   return {
+        //     "americastestkitchen": "P3MUmmU9pu",
+        //     "cooksillustrated": "CLRfAMqqpu",
+        //     "cookscountry": "rkIgdPatpu",
+        //   }[domain]
+        // }
+
+        /**
+         * example implementation static aid
+         */
+        return "P3MUmmU9pu";
       }
 
       /**

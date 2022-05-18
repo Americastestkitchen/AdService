@@ -3,20 +3,12 @@
   "version": "1.0.0",
   "description": "## Installation",
   "main": "index.js",
-  "dependencies": {
-    "typescript": "^4.6.4"
-  },
   "devDependencies": {
-    "ts-loader": "^9.3.0",
-    "webpack": "^5.72.1",
-    "webpack-cli": "^4.9.2",
-    "webpack-dev-server": "^4.9.0"
+    "typescript": "^4.6.4"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
-    "local": "webpack-dev-server ./src/index.ts ./dist/bundle.js",
-    "webpack": "webpack ./src/index.ts && npm run local"
+    "build": "tsc"
   },
   "repository": {
     "type": "git",

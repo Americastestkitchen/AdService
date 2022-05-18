@@ -1,4 +1,5 @@
 import type { User, PianoConfig } from "./types";
+import "./piano";
 export default class PianoAdapter {
     #private;
     afterRenderCallbacks?: (() => void)[];
