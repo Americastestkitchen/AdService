@@ -10,6 +10,9 @@ and yarn
 
 ```shell
 npm install git+https://github.com/Americastestkitchen/AdService.git
+
+- specific branch 
+"adservice": "git+https://github.com/Americastestkitchen/AdService.git#jb-init-setup",
 ```
 
 To reference AdServer in your project you have to use a absolute path
@@ -20,7 +23,7 @@ import AdServer from "/node_modules/ad-service/dist/ad-server.js";
 
 Example Espresso Component Integration
 Can't load SDK with CV hitting CDN in dry inline
-Need to conditionally utilize tinypass.js until we can make switch
+Need setup to conditionally utilize tinypass.js until we can make full switch
 
 import React, { useEffect, useState } from 'react';
 

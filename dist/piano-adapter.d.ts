@@ -1,4 +1,8 @@
 import type { User, PianoConfig } from "./types";
+/**
+ * Conditionally import SDK to support original
+ * CV implementation that's running paywalls
+ */
 import "./piano";
 export default class PianoAdapter {
     #private;

@@ -1,5 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * Conditionally import SDK to support original
+ * CV implementation that's running paywalls
+ */
 require("./piano");
 class PianoAdapter {
     afterRenderCallbacks;
@@ -23,7 +27,13 @@ class PianoAdapter {
      * Returns the AID based on the current url
      */
     #getAid() {
+        /**
+         * static aid when localhost pointing at
+         * ATK Sandbox piano application for example
+         */
         const [subdomain, domain] = window.location.hostname.split('.');
+        if (subdomain === 'localhost')
+            return "P3MUmmU9pu";
         if (subdomain === 'www') {
             return {
                 "americastestkitchen": "o8it4JKTpu",
@@ -38,10 +48,6 @@ class PianoAdapter {
                 "cookscountry": "rkIgdPatpu",
             }[domain];
         }
-        /**
-         * example implementation static aid
-         */
-        // return "P3MUmmU9pu";
     }
     /**
      * Retrieves the user token from cookies or from a user context.

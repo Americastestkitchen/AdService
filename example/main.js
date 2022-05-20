@@ -1,5 +1,6 @@
-import AdServer from '../dist/index';
+import { AdServer } from '../dist/index';
 
+console.log(AdServer, 'Adserver')
 const mixpanelPresented = {
     service: 'mixpanel',
     action: 'Membership Block',
@@ -22,5 +23,8 @@ const piano = new AdServer({
     ],
     tags: [["testing"]],
 });
+
+console.log(piano, 'piano');
+console.log(piano.dispatchAd(), 'piano');
 
 piano.dispatchAd();

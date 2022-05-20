@@ -1,6 +1,10 @@
 import type { User, PianoConfig } from "./types"
-import "./piano";
+/**
+ * Conditionally import SDK to support original
+ * CV implementation that's running paywalls
+ */
 
+import "./piano"
 export default class PianoAdapter {
     afterRenderCallbacks?:(()=> void)[];
     thirdPartyCallbacks?:(()=> void)[];
@@ -31,8 +35,13 @@ export default class PianoAdapter {
        * Returns the AID based on the current url
        */
       #getAid(){
+        /**
+         * static aid when localhost pointing at
+         * ATK Sandbox piano application for example
+         */
         const [subdomain, domain] = window.location.hostname.split('.')
-        if(subdomain === 'www'){
+        if (subdomain === 'localhost') return "P3MUmmU9pu";
+        if (subdomain === 'www'){
           return {
             "americastestkitchen": "o8it4JKTpu",
             "cooksillustrated": "0l4CXRBBpu",
@@ -45,11 +54,6 @@ export default class PianoAdapter {
             "cookscountry": "rkIgdPatpu",
           }[domain]
         }
-
-        /**
-         * example implementation static aid
-         */
-        // return "P3MUmmU9pu";
       }
 
       /**
