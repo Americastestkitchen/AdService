@@ -1,4 +1,4 @@
-import PianoAdapter from "./piano-adapter.js"
+import PianoAdapter from "./piano-adapter";
 
 declare global {
   interface Window {
@@ -14,7 +14,6 @@ declare global {
   }
 }
 
-
 /**
  *
  *  When we decide to ad a new ad service we will have to change the type of adServicer
@@ -23,7 +22,7 @@ declare global {
  *
  */
 
-export default class AdServer {
+class AdServer {
     afterAdRender?:(() => void)[];
     afterAdInit?:(() => void)[];
     beforeAdInit?:(() => void)[];
@@ -54,7 +53,7 @@ export default class AdServer {
     /**
      * Sets up the adapter for our Ad Service
      * Adapters api:
-     * To render an template it REQUIRES an init() method
+     * To render a template it REQUIRES an init() method
      * To interact with third-party services the adapter constructor REQUIRES an interface to receive an array of callbacks.
      * To match on custom variables it MAY have tags, matchers, or user-state
      * Lifecycle methods can be fired from the AdServer class or passed through to the Adapter.
@@ -119,3 +118,5 @@ export default class AdServer {
         this.executeAfterAdInit();
     }
 }
+
+export { AdServer }

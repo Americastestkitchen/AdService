@@ -1,5 +1,10 @@
 import type { User, PianoConfig } from "./types"
+/**
+ * Conditionally import SDK to support original
+ * CV implementation that's running paywalls
+ */
 
+import "./piano"
 export default class PianoAdapter {
     afterRenderCallbacks?:(()=> void)[];
     thirdPartyCallbacks?:(()=> void)[];
@@ -30,8 +35,13 @@ export default class PianoAdapter {
        * Returns the AID based on the current url
        */
       #getAid(){
+        /**
+         * static aid when localhost pointing at
+         * ATK Sandbox piano application for example
+         */
         const [subdomain, domain] = window.location.hostname.split('.')
-        if(subdomain === 'www'){
+        if (subdomain === 'localhost') return "P3MUmmU9pu";
+        if (subdomain === 'www'){
           return {
             "americastestkitchen": "o8it4JKTpu",
             "cooksillustrated": "0l4CXRBBpu",
@@ -168,6 +178,7 @@ export default class PianoAdapter {
          */
         async function trackMixpanel({action, status, params, customParams: {incode,clickdomain} }){
           let {url} = await JSON.parse(params)
+          // TODO: change 172 to support subdomains
           const [, location = "homepage"] = url.split(":5500/")
           window.mixpanel.track(action, {incode, status, location, type: clickdomain})
         }
@@ -247,10 +258,12 @@ export default class PianoAdapter {
        *
        * @returns PianoConfig
        */
+
+      // debug if non prod
       getConfigProperties(): PianoConfig {
         return {
           setAid: this.user.aid,
-          setDebug: false,
+          setDebug: true,
           setEndpoint: "https://buy.tinypass.com/api/v3",
           setExternalJWT: this.user.token,
           setUsePianoIdUserProvider: true,
