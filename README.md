@@ -23,8 +23,8 @@ import AdServer from "/node_modules/ad-service/dist/ad-server.js";
 
 Example Espresso Component Integration
 Can't load SDK with CV hitting CDN in dry inline
-Need setup to conditionally utilize tinypass.js until we can make full switch
 
+```
 import React, { useEffect, useState } from 'react';
 
 const AdService = ({
@@ -76,3 +76,4 @@ const AdService = ({
 }
 
 export default AdService;
+```
