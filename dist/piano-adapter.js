@@ -4,7 +4,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * Conditionally import SDK to support original
  * CV implementation that's running paywalls
  */
-require("./piano");
 class PianoAdapter {
     afterRenderCallbacks;
     thirdPartyCallbacks;
@@ -129,11 +128,11 @@ class PianoAdapter {
             'recipe landing page': 'recipe landing page',
             'reviews landing page': 'reviews landing page',
             'review detail page': 'review detail page',
+            '/': 'homepage'
         };
         function handleMembershipBlock() {
             async function trackMixpanel({ action, status, params, customParams }) {
-                let { url } = await JSON.parse(params);
-                const [, location = "homepage"] = url.split(":5500/");
+                const location = locationMap[window.location.pathname];
                 window.mixpanel.track(action, { incode: customParams.incode, status, location, type: customParams.clickdomain }, { transport: 'sendBeacon' });
             }
             switch (status) {
@@ -163,11 +162,17 @@ class PianoAdapter {
                     if (eventName !== 'sign-up-button')
                         return;
                     const { params: jsonParams, adtype, clickdomain, devicetype, incode, mdc } = params;
-                    let { url } = await JSON.parse(jsonParams);
-                    debugger;
-                    const [location = "homepage"] = url.split(":5500/");
+                    const url = window.location;
+                    const location = locationMap[window.location.pathname];
+                    //track email capture
                     window.mixpanel.track(action, { incode: incode, status: 'Accepted', location, type: status }, { transport: 'sendBeacon' });
-                    document.location.href = `${url}order?mdc=${mdc}&incode=${incode}`;
+                    //redirect to midas flow
+                    if (url.href.includes('localhost')) {
+                        document.location.href = `${url.href}order.html?mdc=${mdc}&incode=${incode}`;
+                    }
+                    else {
+                        document.location.href = `${url.href}order?mdc=${mdc}&incode=${incode}`;
+                    }
                 }]);
         }
         switch (action) {
