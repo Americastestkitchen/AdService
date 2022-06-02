@@ -119,77 +119,64 @@ class PianoAdapter {
             }
         });
     }
-    /**
-     * Configures mixpanel's global api for tracking events with piano template content fields
-     *
-     * @remarks
-     * We are borrowing a pattern from redux, instead of action and payload we have mixpanel properties of status and actions
-     * Actions are the event callbacks taking piano content fields and parsing the information we require for each specific event.
-     *
-     * We are using external events launch these callback. A hacky solution currently but we are injecting a third party iframe into our
-     * application. There is a limited scope of interaction we can have with the template. But what we don't want is to couple our code
-     * where the template is getting rendered. So hacky > heavily coupled currently.
-     *
-     * https://docs.piano.io/offer-template-essentials/#externalevent
-     *
-     * Every action that we want to track with mixpanel we add an additional case and add an external event on the template
-     * We have to trigger it with javascript on the template if it is not a user triggered event (until we find a better way).
-     *
-     * @param ConfigObj
-     *
-     */
     setMixpanel({ status, action }) {
-        /**
-         * todo: add all of the available fields we get from the piano params obj and the params.params obj
-         * This function maps the params data received from the event we get from piano
-         * including custom parameters we have to set up in the external-event data-attributes
-         * We can not target traditional data-attributes :frown:
-         *
-         *
-         *@example
-         * <span
-         * id="mixpanel-params"
-         * external-event="presented"
-         * external-event-params="{{params}}"
-         * external-event-adtype="[%% ad-type %%]"
-         * external-event-incode="[%% incode %%]"
-         * external-event-deviceType="[%% deviceType %%]"
-         * external-event-clickdomain="[%% click-domain %%]"
-         * external-event-mdc="[%% mdc %%]"
-         * ></span>
-         *
-         *
-         * In the custom script we have to manually trigger an event that is not cause by
-         * user interaction. For this example we want to be able to fire a presented event to mixpanel
-         * but because it isn't user triggered we will click on the span that will fire the external-event.
-         *
-         * <div custom-script>
-         *   document.getElementById("mixpanel-params").click();
-         * </div>
-         */
-        async function trackMixpanel({ action, status, params, customParams: { incode, clickdomain } }) {
-            let { url } = await JSON.parse(params);
-            // TODO: change 172 to support subdomains
-            const [, location = "homepage"] = url.split(":5500/");
-            window.mixpanel.track(action, { incode, status, location, type: clickdomain });
+        const locationMap = {
+            article: 'article detail page',
+            collection: 'collection detail page',
+            how_to: 'how to detail page',
+            recipe: 'recipe detail page',
+            thanksgiving: 'Thanksgiving guide',
+            'recipe landing page': 'recipe landing page',
+            'reviews landing page': 'reviews landing page',
+            'review detail page': 'review detail page',
+        };
+        function handleMembershipBlock() {
+            async function trackMixpanel({ action, status, params, customParams }) {
+                let { url } = await JSON.parse(params);
+                const [, location = "homepage"] = url.split(":5500/");
+                window.mixpanel.track(action, { incode: customParams.incode, status, location, type: customParams.clickdomain }, { transport: 'sendBeacon' });
+            }
+            switch (status) {
+                case 'Accepted': {
+                    this.tp.push(["addHandler", "customEvent", function (event) {
+                            if (event?.eventName !== 'sign-up-button')
+                                return;
+                            trackMixpanel({ action, status, params: event.params.params, customParams: event.params });
+                        }]);
+                    break;
+                }
+                case 'Presented': {
+                    this.tp.push(["addHandler", "customEvent", async function (event) {
+                            if (event?.eventName !== 'presented')
+                                return;
+                            trackMixpanel({ action, status, params: event.params.params, customParams: event.params });
+                        }]);
+                    break;
+                }
+                default:
+                    break;
+            }
         }
-        switch (status) {
-            case 'Accepted': {
-                this.tp.push(["addHandler", "customEvent", function (event) {
-                        if (event?.eventName !== 'sign-up-button')
-                            return;
-                        trackMixpanel({ action, status, params: event.params.params, customParams: event.params });
-                    }]);
+        function handleEmailCapture() {
+            this.tp.push(["addHandler", "customEvent", async function (event) {
+                    const { eventName, params } = event;
+                    if (eventName !== 'sign-up-button')
+                        return;
+                    const { params: jsonParams, adtype, clickdomain, devicetype, incode, mdc } = params;
+                    let { url } = await JSON.parse(jsonParams);
+                    debugger;
+                    const [location = "homepage"] = url.split(":5500/");
+                    window.mixpanel.track(action, { incode: incode, status: 'Accepted', location, type: status }, { transport: 'sendBeacon' });
+                    document.location.href = `${url}order?mdc=${mdc}&incode=${incode}`;
+                }]);
+        }
+        switch (action) {
+            case "Membership Block":
+                handleMembershipBlock.call(this);
                 break;
-            }
-            case 'Presented': {
-                this.tp.push(["addHandler", "customEvent", async function (event) {
-                        if (event?.eventName !== 'presented')
-                            return;
-                        trackMixpanel({ action, status, params: event.params.params, customParams: event.params });
-                    }]);
+            case "Email Capture":
+                handleEmailCapture.call(this);
                 break;
-            }
             default:
                 break;
         }
@@ -249,7 +236,7 @@ class PianoAdapter {
     getConfigProperties() {
         return {
             setAid: this.user.aid,
-            setDebug: true,
+            setDebug: false,
             setEndpoint: "https://buy.tinypass.com/api/v3",
             setExternalJWT: this.user.token,
             setUsePianoIdUserProvider: true,
