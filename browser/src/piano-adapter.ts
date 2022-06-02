@@ -1,3 +1,4 @@
+import './piano';
 import type { User, PianoConfig } from "./types"
 /**
  * Conditionally import SDK to support original
@@ -58,7 +59,7 @@ export default class PianoAdapter {
        * Retrieves the user token from cookies or from a user context.
        */
       #getUserToken():string{
-          var c = document.cookie.match("(^|;)\\s*user_token\\s*=\\s*([^;]+)");
+          var c = document.cookie.match("(^|;)\s*user_token\s*=\s*([^;]+)");
           if (c && c.length > 0) return c.pop();
           else return null;
       }

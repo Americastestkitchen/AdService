@@ -8,8 +8,6 @@ declare global {
                 location: string;
                 type: string;
                 status: string;
-            }, transport: {
-                transport: string;
             }) => void;
         };
     }
@@ -73,4 +71,4 @@ declare class AdServer {
      */
     dispatchAd(): void;
 }
-export { AdServer };
+export default AdServer;
