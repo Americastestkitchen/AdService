@@ -180,7 +180,7 @@ export default class PianoAdapter {
             const location = locationMap[window.location.pathname]
             //track email capture
             window.mixpanel.track(action, {incode: incode, status: 'Accepted', location, type: status}, {transport: 'sendBeacon'})
-            window.location.href = `${url.origin}/order?mdc=${mdc}&incode=${incode}`
+            window.location.href = `/order?mdc=${mdc}&incode=${incode}`
 
          } ]);
         }
