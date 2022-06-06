@@ -16,16 +16,19 @@ export default class PianoAdapter {
     tp:any;
     user:User;
     result: any;
+    debug: boolean;
 
     constructor({
       thirdPartyCallbacks = [],
       afterRenderCallbacks = [],
       matchers = [],
       tags = [],
+      debug = true,
       user
     }) {
         this.tp = window.tp || []
         this.user = this.setUser(user);
+        this.debugLog(debug);
         this.setEnvConfig();
         this.setDisclaimer();
         this.setThirdPartyCallbacks(thirdPartyCallbacks);
@@ -37,10 +40,18 @@ export default class PianoAdapter {
         this.setTags(tags);
       }
 
+      debugLog(debug){
+        if(debug){
+          this.tp.push(['addHandler', "checkoutCustomEvent", function(event){
+            console.log({"external-event": event})
+          }]);
+        }
+      }
+
       /**
        * Returns the AID based on the current url
        */
-      #getAid(){
+      getAid(){
         /**
          * static aid when localhost pointing at
          * ATK Sandbox piano application for example
@@ -65,7 +76,7 @@ export default class PianoAdapter {
       /**
        * Retrieves the user token from cookies or from a user context.
        */
-      #getUserToken():string{
+      getUserToken():string{
           var c = document.cookie.match("(^|;)\s*user_token\s*=\s*([^;]+)");
           if (c && c.length > 0) return c.pop();
           else return null;
@@ -85,8 +96,8 @@ export default class PianoAdapter {
        */
       setUser(user){
         return {
-          aid: this.#getAid(),
-          token: this.#getUserToken(),
+          aid: this.getAid(),
+          token: this.getUserToken(),
         }
       }
 
@@ -210,7 +221,11 @@ export default class PianoAdapter {
           }
           button.style.display = hideShow;
         }
-        this.tp.push(['addHandler', "customEvent", handleHowWeUse])
+        this.tp.push(['addHandler', "checkoutCustomEvent", function(event){
+          if(event.eventName === 'how-we-use'){
+            handleHowWeUse();
+          }
+        }])
       }
 
       /**
