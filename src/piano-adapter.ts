@@ -7,7 +7,7 @@ import type { User, PianoConfig } from "./types"
  *
  * Todo: Seperate teh Piano Adapter from the AdServer. Create API so that the AdServer
  * will accept an adapter or a new instance of the Piano Adapter.
- * 
+ *
  */
 export default class PianoAdapter {
     afterRenderCallbacks?:(()=> void)[];
@@ -186,7 +186,7 @@ export default class PianoAdapter {
             if(url.href.includes('localhost')){
               document.location.href = `${url.href}order.html?mdc=${mdc}&incode=${incode}`
             }else{
-              document.location.href = `${url.origin}order?mdc=${mdc}&incode=${incode}`
+              document.location.href = `${url.origin}/order?mdc=${mdc}&incode=${incode}`
             }
 
          } ]);
