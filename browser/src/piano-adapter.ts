@@ -43,7 +43,7 @@ export default class PianoAdapter {
       debugLog(debug){
         if(debug){
           this.tp.push(['addHandler', "checkoutCustomEvent", function(event){
-            console.log({'mixpanel-loaded': window.mixpanel})
+            console.log({'mixpanel': window.mixpanel})
             console.log({"external-event": event})
           }]);
         }

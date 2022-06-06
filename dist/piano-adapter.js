@@ -1,8 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
- * Conditionally import SDK to support original
+ * Todo: Conditionally import SDK to support original
  * CV implementation that's running paywalls
+ * Something like:
+ *  check if window or window.navigator is undefined and if window.tp is undefined
+ *
+ * Todo: Separate the Piano Adapter from the AdServer. Create API so that the AdServer
+ * will accept an adapter or a new instance of the Piano Adapter.
+ *
  */
 class PianoAdapter {
     afterRenderCallbacks;
@@ -10,10 +16,13 @@ class PianoAdapter {
     tp;
     user;
     result;
-    constructor({ thirdPartyCallbacks = [], afterRenderCallbacks = [], matchers = [], tags = [], user }) {
+    debug;
+    constructor({ thirdPartyCallbacks = [], afterRenderCallbacks = [], matchers = [], tags = [], debug = true, user }) {
         this.tp = window.tp || [];
         this.user = this.setUser(user);
+        this.debugLog(debug);
         this.setEnvConfig();
+        this.setDisclaimer();
         this.setThirdPartyCallbacks(thirdPartyCallbacks);
         this.setCustomVariables(matchers);
         this.setAfterAdRender(afterRenderCallbacks);
@@ -22,10 +31,18 @@ class PianoAdapter {
         }
         this.setTags(tags);
     }
+    debugLog(debug) {
+        if (debug) {
+            this.tp.push(['addHandler', "checkoutCustomEvent", function (event) {
+                    console.log({ 'mixpanel': window.mixpanel });
+                    console.log({ "external-event": event });
+                }]);
+        }
+    }
     /**
      * Returns the AID based on the current url
      */
-    #getAid() {
+    getAid() {
         /**
          * static aid when localhost pointing at
          * ATK Sandbox piano application for example
@@ -51,7 +68,7 @@ class PianoAdapter {
     /**
      * Retrieves the user token from cookies or from a user context.
      */
-    #getUserToken() {
+    getUserToken() {
         var c = document.cookie.match("(^|;)\\s*user_token\\s*=\\s*([^;]+)");
         if (c && c.length > 0)
             return c.pop();
@@ -72,8 +89,8 @@ class PianoAdapter {
      */
     setUser(user) {
         return {
-            aid: this.#getAid(),
-            token: this.#getUserToken(),
+            aid: this.getAid(),
+            token: this.getUserToken(),
         };
     }
     init() {
@@ -166,13 +183,7 @@ class PianoAdapter {
                     const location = locationMap[window.location.pathname];
                     //track email capture
                     window.mixpanel.track(action, { incode: incode, status: 'Accepted', location, type: status }, { transport: 'sendBeacon' });
-                    //redirect to midas flow
-                    if (url.href.includes('localhost')) {
-                        document.location.href = `${url.href}order.html?mdc=${mdc}&incode=${incode}`;
-                    }
-                    else {
-                        document.location.href = `${url.href}order?mdc=${mdc}&incode=${incode}`;
-                    }
+                    window.location.href = `/order?mdc=${mdc}&incode=${incode}`;
                 }]);
         }
         switch (action) {
@@ -185,6 +196,24 @@ class PianoAdapter {
             default:
                 break;
         }
+    }
+    setDisclaimer() {
+        function handleHowWeUse() {
+            var hideShow;
+            var button = document.getElementById('how-we-use');
+            if (button.style.display === 'none') {
+                hideShow = 'block';
+            }
+            else {
+                hideShow = 'none';
+            }
+            button.style.display = hideShow;
+        }
+        this.tp.push(['addHandler', "checkoutCustomEvent", function (event) {
+                if (event.eventName === 'how-we-use') {
+                    handleHowWeUse();
+                }
+            }]);
     }
     /**
      * We attach callbacks that fire before the browser renders the template

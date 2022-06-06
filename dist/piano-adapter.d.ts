@@ -1,22 +1,38 @@
 import type { User, PianoConfig } from "./types";
 /**
- * Conditionally import SDK to support original
+ * Todo: Conditionally import SDK to support original
  * CV implementation that's running paywalls
+ * Something like:
+ *  check if window or window.navigator is undefined and if window.tp is undefined
+ *
+ * Todo: Separate the Piano Adapter from the AdServer. Create API so that the AdServer
+ * will accept an adapter or a new instance of the Piano Adapter.
+ *
  */
 export default class PianoAdapter {
-    #private;
     afterRenderCallbacks?: (() => void)[];
     thirdPartyCallbacks?: (() => void)[];
     tp: any;
     user: User;
     result: any;
-    constructor({ thirdPartyCallbacks, afterRenderCallbacks, matchers, tags, user }: {
+    debug: boolean;
+    constructor({ thirdPartyCallbacks, afterRenderCallbacks, matchers, tags, debug, user }: {
         thirdPartyCallbacks?: any[];
         afterRenderCallbacks?: any[];
         matchers?: any[];
         tags?: any[];
+        debug?: boolean;
         user: any;
     });
+    debugLog(debug: any): void;
+    /**
+     * Returns the AID based on the current url
+     */
+    getAid(): string;
+    /**
+     * Retrieves the user token from cookies or from a user context.
+     */
+    getUserToken(): string;
     /**
      * Sets required user fields to execute a piano experience.
      *
@@ -49,6 +65,7 @@ export default class PianoAdapter {
         status: any;
         action: any;
     }): void;
+    setDisclaimer(): void;
     /**
      * We attach callbacks that fire before the browser renders the template
      *
