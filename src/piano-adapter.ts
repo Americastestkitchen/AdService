@@ -5,7 +5,7 @@ import type { User, PianoConfig } from "./types"
  * Something like:
  *  check if window or window.navigator is undefined and if window.tp is undefined
  *
- * Todo: Seperate teh Piano Adapter from the AdServer. Create API so that the AdServer
+ * Todo: Separate the Piano Adapter from the AdServer. Create API so that the AdServer
  * will accept an adapter or a new instance of the Piano Adapter.
  *
  */
@@ -42,6 +42,7 @@ export default class PianoAdapter {
       debugLog(debug){
         if(debug){
           this.tp.push(['addHandler', "checkoutCustomEvent", function(event){
+            console.log({'mixpanel': window.mixpanel})
             console.log({"external-event": event})
           }]);
         }
@@ -193,7 +194,6 @@ export default class PianoAdapter {
             //track email capture
             window.mixpanel.track(action, {incode: incode, status: 'Accepted', location, type: status}, {transport: 'sendBeacon'})
             window.location.href = `/order?mdc=${mdc}&incode=${incode}`
-
          } ]);
         }
 
