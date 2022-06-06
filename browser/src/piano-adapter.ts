@@ -27,6 +27,7 @@ export default class PianoAdapter {
         this.tp = window.tp || []
         this.user = this.setUser(user);
         this.setEnvConfig();
+        this.setDisclaimer();
         this.setThirdPartyCallbacks(thirdPartyCallbacks);
         this.setCustomVariables(matchers);
         this.setAfterAdRender(afterRenderCallbacks);
@@ -177,6 +178,7 @@ export default class PianoAdapter {
             const {eventName, params } = event;
             if(eventName !== 'sign-up-button')return;
             const { params:jsonParams, adtype, clickdomain, devicetype, incode, mdc} = params;
+            const url = window.location
             const location = locationMap[window.location.pathname]
             //track email capture
             window.mixpanel.track(action, {incode: incode, status: 'Accepted', location, type: status}, {transport: 'sendBeacon'})
@@ -195,6 +197,20 @@ export default class PianoAdapter {
           default:
             break;
         }
+      }
+
+      setDisclaimer(){
+        function handleHowWeUse() {
+          var hideShow;
+          var button = document.getElementById('how-we-use');
+          if (button.style.display === 'none') {
+            hideShow = 'block';
+          } else {
+            hideShow = 'none';
+          }
+          button.style.display = hideShow;
+        }
+        this.tp.push(['addHandler', "customEvent", handleHowWeUse])
       }
 
       /**

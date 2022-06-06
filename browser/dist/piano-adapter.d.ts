@@ -55,6 +55,7 @@ export default class PianoAdapter {
         status: any;
         action: any;
     }): void;
+    setDisclaimer(): void;
     /**
      * We attach callbacks that fire before the browser renders the template
      *
