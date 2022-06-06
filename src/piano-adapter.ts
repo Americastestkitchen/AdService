@@ -176,18 +176,11 @@ export default class PianoAdapter {
             const {eventName, params } = event;
             if(eventName !== 'sign-up-button')return;
             const { params:jsonParams, adtype, clickdomain, devicetype, incode, mdc} = params;
-
             const url = window.location
             const location = locationMap[window.location.pathname]
             //track email capture
             window.mixpanel.track(action, {incode: incode, status: 'Accepted', location, type: status}, {transport: 'sendBeacon'})
-
-            //redirect to midas flow
-            if(url.href.includes('localhost')){
-              document.location.href = `${url.href}order.html?mdc=${mdc}&incode=${incode}`
-            }else{
-              document.location.href = `${url.origin}/order?mdc=${mdc}&incode=${incode}`
-            }
+            window.location.href = `${url.origin}/order?mdc=${mdc}&incode=${incode}`
 
          } ]);
         }

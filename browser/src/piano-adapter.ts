@@ -1,8 +1,14 @@
 import './piano';
 import type { User, PianoConfig } from "./types"
 /**
- * Conditionally import SDK to support original
+ * Todo: Conditionally import SDK to support original
  * CV implementation that's running paywalls
+ * Something like:
+ *  check if window or window.navigator is undefined and if window.tp is undefined
+ *
+ * Todo: Seperate teh Piano Adapter from the AdServer. Create API so that the AdServer
+ * will accept an adapter or a new instance of the Piano Adapter.
+ *
  */
 export default class PianoAdapter {
     afterRenderCallbacks?:(()=> void)[];
@@ -171,18 +177,11 @@ export default class PianoAdapter {
             const {eventName, params } = event;
             if(eventName !== 'sign-up-button')return;
             const { params:jsonParams, adtype, clickdomain, devicetype, incode, mdc} = params;
-
             const url = window.location
             const location = locationMap[window.location.pathname]
             //track email capture
             window.mixpanel.track(action, {incode: incode, status: 'Accepted', location, type: status}, {transport: 'sendBeacon'})
-
-            //redirect to midas flow
-            if(url.href.includes('localhost')){
-              document.location.href = `${url.href}order.html?mdc=${mdc}&incode=${incode}`
-            }else{
-              document.location.href = `${url.href}order?mdc=${mdc}&incode=${incode}`
-            }
+            window.location.href = `${url.origin}/order?mdc=${mdc}&incode=${incode}`
 
          } ]);
         }

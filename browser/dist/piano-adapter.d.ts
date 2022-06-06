@@ -1,7 +1,13 @@
 import type { User, PianoConfig } from "./types";
 /**
- * Conditionally import SDK to support original
+ * Todo: Conditionally import SDK to support original
  * CV implementation that's running paywalls
+ * Something like:
+ *  check if window or window.navigator is undefined and if window.tp is undefined
+ *
+ * Todo: Seperate teh Piano Adapter from the AdServer. Create API so that the AdServer
+ * will accept an adapter or a new instance of the Piano Adapter.
+ *
  */
 export default class PianoAdapter {
     #private;
