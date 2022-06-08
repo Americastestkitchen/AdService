@@ -6,21 +6,25 @@ export default class PianoAdapter {
     tp:any;
     user:User;
     result: any;
-    debug: boolean;
     sdk?: any;
+    pianoDebug: boolean;
+    mixpanelDebug: boolean;
 
     constructor({
       thirdPartyCallbacks = [],
       afterRenderCallbacks = [],
       matchers = [],
       tags = [],
-      debug = true,
+      mpDebug = true,
+      pDebug = false,
       sdk,
       user
     }) {
         this.tp = sdk;
         this.user = this.setUser(user);
-        this.debug = debug;
+        //todo: set debug based on env
+        this.pianoDebug = pDebug;
+        this.mixpanelDebug = mpDebug;
         this.setEnvConfig();
         this.setDisclaimer();
         this.setThirdPartyCallbacks(thirdPartyCallbacks);
@@ -29,8 +33,8 @@ export default class PianoAdapter {
         this.setTags(tags);
       }
 
-      debugLog(){
-        if(this.debug){
+      mixpanelLog(){
+        if(this.mixpanelDebug){
           this.tp.push(['addHandler', "checkoutCustomEvent", function(event){
             console.log({'mixpanel': window.mixpanel})
             console.log({"external-event": event})
@@ -281,7 +285,7 @@ export default class PianoAdapter {
       getConfigProperties(): PianoConfig {
         return {
           setAid: this.user.aid,
-          setDebug: this.debug,
+          setDebug: this.pianoDebug,
           setEndpoint: "https://buy.tinypass.com/api/v3",
           setExternalJWT: this.user.token,
           setUsePianoIdUserProvider: true,
@@ -297,7 +301,7 @@ export default class PianoAdapter {
        * todo: expand explanation
        */
       setEnvConfig() {
-        this.debugLog();
+        this.mixpanelLog();
         const config = this.getConfigProperties();
         Object.entries(config).forEach((d) => this.tp.push(d));
       }

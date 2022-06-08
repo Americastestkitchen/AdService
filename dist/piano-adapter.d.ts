@@ -5,18 +5,20 @@ export default class PianoAdapter {
     tp: any;
     user: User;
     result: any;
-    debug: boolean;
     sdk?: any;
-    constructor({ thirdPartyCallbacks, afterRenderCallbacks, matchers, tags, debug, sdk, user }: {
+    pianoDebug: boolean;
+    mixpanelDebug: boolean;
+    constructor({ thirdPartyCallbacks, afterRenderCallbacks, matchers, tags, mpDebug, pDebug, sdk, user }: {
         thirdPartyCallbacks?: any[];
         afterRenderCallbacks?: any[];
         matchers?: any[];
         tags?: any[];
-        debug?: boolean;
+        mpDebug?: boolean;
+        pDebug?: boolean;
         sdk: any;
         user: any;
     });
-    debugLog(): void;
+    mixpanelLog(): void;
     /**
      * Returns the AID based on the current url
      */
