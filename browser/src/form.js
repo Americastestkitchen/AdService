@@ -1,5 +1,5 @@
 import "./style.css";
-import { AdServer } from "./index";
+import { AdServer, PianoAdapter } from "./index";
 
 const addSeg = document.getElementById("add-seg");
 addSeg.addEventListener("click", (e) => {
@@ -118,13 +118,24 @@ function sanitize(obj) {
 }
 
 function launchAd(userSegments, mixpanelEvents, tags) {
-  const config = {
-    matchers: userSegments,
-    thirdPartyCallbacks: mixpanelEvents,
-    tags: [tags],
-    adServicer: "piano",
-  };
-  const advert = new AdServer(sanitize(config));
-  advert.dispatchAd();
-  console.log(advert);
+  if (window?.tp && typeof window.tp === "object") {
+    const pianoAdapter = new PianoAdapter({
+      sdk: window.tp,
+      debug: false,
+    });
+
+    const advert = new AdServer(
+      sanitize({
+        matchers: userSegments,
+        thirdPartyCallbacks: mixpanelEvents,
+        tags: tags,
+        adServicer: pianoAdapter,
+      })
+    );
+
+    advert.dispatchAd();
+    console.log(advert);
+  } else {
+    console.log("Piano sdk failed to load adServicer");
+  }
 }

@@ -1,14 +1,4 @@
 import type { User, PianoConfig } from "./types";
-/**
- * Todo: Conditionally import SDK to support original
- * CV implementation that's running paywalls
- * Something like:
- *  check if window or window.navigator is undefined and if window.tp is undefined
- *
- * Todo: Separate the Piano Adapter from the AdServer. Create API so that the AdServer
- * will accept an adapter or a new instance of the Piano Adapter.
- *
- */
 export default class PianoAdapter {
     afterRenderCallbacks?: (() => void)[];
     thirdPartyCallbacks?: (() => void)[];
@@ -16,15 +6,17 @@ export default class PianoAdapter {
     user: User;
     result: any;
     debug: boolean;
-    constructor({ thirdPartyCallbacks, afterRenderCallbacks, matchers, tags, debug, user }: {
+    sdk?: any;
+    constructor({ thirdPartyCallbacks, afterRenderCallbacks, matchers, tags, debug, sdk, user }: {
         thirdPartyCallbacks?: any[];
         afterRenderCallbacks?: any[];
         matchers?: any[];
         tags?: any[];
         debug?: boolean;
+        sdk: any;
         user: any;
     });
-    debugLog(debug: any): void;
+    debugLog(): void;
     /**
      * Returns the AID based on the current url
      */
@@ -46,8 +38,8 @@ export default class PianoAdapter {
      * @param user
      */
     setUser(user: any): {
-        aid: string;
-        token: string;
+        aid: any;
+        token: any;
     };
     init(): void;
     /**
@@ -93,7 +85,7 @@ export default class PianoAdapter {
      *
      * @param matchers
      */
-    setCustomVariables(matchers: string[]): void;
+    setMatchers(matchers: string[]): void;
     /**
      * Each experience in composer requires proper configuration.
      * This object will set up our configuration object properly to launch the expected experience.
@@ -120,5 +112,5 @@ export default class PianoAdapter {
      *
      * @param tags
      */
-    setTags(tags: string[][]): void;
+    setTags(tags: string[]): void;
 }
