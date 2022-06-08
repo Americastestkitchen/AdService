@@ -1,6 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class PianoAdapter {
+export default class PianoAdapter {
     afterRenderCallbacks;
     thirdPartyCallbacks;
     tp;
@@ -297,5 +295,4 @@ class PianoAdapter {
         this.tp.push(["setTags", tags]);
     }
 }
-exports.default = PianoAdapter;
 //# sourceMappingURL=piano-adapter.js.map

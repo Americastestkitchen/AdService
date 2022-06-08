@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 /**
  *
  *  When we decide to ad a new ad service we will have to change the type of adServicer
@@ -52,5 +50,5 @@ class AdServer {
         this.executeAfterAdRender();
     }
 }
-exports.default = AdServer;
+export default AdServer;
 //# sourceMappingURL=ad-server.js.map
