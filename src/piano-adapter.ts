@@ -1,14 +1,5 @@
 import type { User, PianoConfig } from "./types"
-/**
- * Todo: Conditionally import SDK to support original
- * CV implementation that's running paywalls
- * Something like:
- *  check if window or window.navigator is undefined and if window.tp is undefined
- *
- * Todo: Separate the Piano Adapter from the AdServer. Create API so that the AdServer
- * will accept an adapter or a new instance of the Piano Adapter.
- *
- */
+
 export default class PianoAdapter {
     afterRenderCallbacks?:(()=> void)[];
     thirdPartyCallbacks?:(()=> void)[];
@@ -16,6 +7,7 @@ export default class PianoAdapter {
     user:User;
     result: any;
     debug: boolean;
+    sdk?: any;
 
     constructor({
       thirdPartyCallbacks = [],
@@ -23,24 +15,22 @@ export default class PianoAdapter {
       matchers = [],
       tags = [],
       debug = true,
+      sdk,
       user
     }) {
-        this.tp = window.tp || []
+        this.tp = sdk;
         this.user = this.setUser(user);
-        this.debugLog(debug);
+        this.debug = debug;
         this.setEnvConfig();
         this.setDisclaimer();
         this.setThirdPartyCallbacks(thirdPartyCallbacks);
-        this.setCustomVariables(matchers);
+        this.setMatchers(matchers);
         this.setAfterAdRender(afterRenderCallbacks);
-        if(!Array.isArray(tags[0])){
-          tags = [tags]
-        }
         this.setTags(tags);
       }
 
-      debugLog(debug){
-        if(debug){
+      debugLog(){
+        if(this.debug){
           this.tp.push(['addHandler', "checkoutCustomEvent", function(event){
             console.log({'mixpanel': window.mixpanel})
             console.log({"external-event": event})
@@ -95,9 +85,16 @@ export default class PianoAdapter {
        * @param user
        */
       setUser(user){
-        return {
-          aid: this.getAid(),
-          token: this.getUserToken(),
+        if(user){
+          return {
+            aid: user.aid,
+            token: user.token,
+          }
+        } else {
+          return {
+            aid: this.getAid(),
+            token: this.getUserToken(),
+          }
         }
       }
 
@@ -193,7 +190,7 @@ export default class PianoAdapter {
             const location = locationMap[window.location.pathname]
             //track email capture
             window.mixpanel.track(action, {incode: incode, status: 'Accepted', location, type: status}, {transport: 'sendBeacon'})
-            window.location.href = `/order?mdc=${mdc}&incode=${incode}`
+            window.location.href = `${window.location.origin}/order?mdc=${mdc}&incode=${incode}`
          } ]);
         }
 
@@ -210,19 +207,16 @@ export default class PianoAdapter {
       }
 
       setDisclaimer(){
-        function handleHowWeUse() {
-          var hideShow;
-          var button = document.getElementById('how-we-use');
-          if (button.style.display === 'none') {
-            hideShow = 'block';
-          } else {
-            hideShow = 'none';
-          }
-          button.style.display = hideShow;
-        }
         this.tp.push(['addHandler', "checkoutCustomEvent", function(event){
           if(event.eventName === 'how-we-use'){
-            handleHowWeUse();
+            let hideShow;
+            const button = document.getElementById('how-we-use');
+            if (button.style.display === 'none') {
+              hideShow = 'block';
+            } else {
+              hideShow = 'none';
+            }
+            button.style.display = hideShow;
           }
         }])
       }
@@ -269,7 +263,7 @@ export default class PianoAdapter {
        *
        * @param matchers
        */
-      setCustomVariables(matchers:string[]) {
+      setMatchers(matchers:string[]) {
         matchers.forEach((cv) => {
           const [key, value] = cv;
           this.tp.push(["setCustomVariable", key, value]);
@@ -287,7 +281,7 @@ export default class PianoAdapter {
       getConfigProperties(): PianoConfig {
         return {
           setAid: this.user.aid,
-          setDebug: false,
+          setDebug: this.debug,
           setEndpoint: "https://buy.tinypass.com/api/v3",
           setExternalJWT: this.user.token,
           setUsePianoIdUserProvider: true,
@@ -303,6 +297,7 @@ export default class PianoAdapter {
        * todo: expand explanation
        */
       setEnvConfig() {
+        this.debugLog();
         const config = this.getConfigProperties();
         Object.entries(config).forEach((d) => this.tp.push(d));
       }
@@ -318,11 +313,7 @@ export default class PianoAdapter {
        *
        * @param tags
        */
-      setTags(tags:string[][]) {
-        tags.forEach((tag) => {
-          if (!Array.isArray(tag)) {
-            this.tp.push(["setTags", tag]);
-          }
-        });
+      setTags(tags:string[]) {
+        this.tp.push(["setTags", tags])
       }
 }

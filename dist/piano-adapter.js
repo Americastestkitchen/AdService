@@ -183,7 +183,7 @@ class PianoAdapter {
                     const location = locationMap[window.location.pathname];
                     //track email capture
                     window.mixpanel.track(action, { incode: incode, status: 'Accepted', location, type: status }, { transport: 'sendBeacon' });
-                    window.location.href = `/order?mdc=${mdc}&incode=${incode}`;
+                    window.location.href = `${window.location.origin}/order?mdc=${mdc}&incode=${incode}`;
                 }]);
         }
         switch (action) {
@@ -198,20 +198,17 @@ class PianoAdapter {
         }
     }
     setDisclaimer() {
-        function handleHowWeUse() {
-            var hideShow;
-            var button = document.getElementById('how-we-use');
-            if (button.style.display === 'none') {
-                hideShow = 'block';
-            }
-            else {
-                hideShow = 'none';
-            }
-            button.style.display = hideShow;
-        }
         this.tp.push(['addHandler', "checkoutCustomEvent", function (event) {
                 if (event.eventName === 'how-we-use') {
-                    handleHowWeUse();
+                    let hideShow;
+                    const button = document.getElementById('how-we-use');
+                    if (button.style.display === 'none') {
+                        hideShow = 'block';
+                    }
+                    else {
+                        hideShow = 'none';
+                    }
+                    button.style.display = hideShow;
                 }
             }]);
     }
