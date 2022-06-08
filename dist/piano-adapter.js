@@ -4,10 +4,9 @@ export default class PianoAdapter {
     tp;
     user;
     result;
-    sdk;
     pianoDebug;
     mixpanelDebug;
-    constructor({ thirdPartyCallbacks = [], afterRenderCallbacks = [], matchers = [], tags = [], mpDebug = true, pDebug = false, sdk, user }) {
+    constructor({ afterRenderCallbacks = [], matchers = [], mpDebug = true, pDebug = false, sdk, tags = [], thirdPartyCallbacks = [], user }) {
         this.tp = sdk;
         this.user = this.setUser(user);
         //todo: set debug based on env

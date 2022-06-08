@@ -6,18 +6,17 @@ export default class PianoAdapter {
     tp:any;
     user:User;
     result: any;
-    sdk?: any;
     pianoDebug: boolean;
     mixpanelDebug: boolean;
 
     constructor({
-      thirdPartyCallbacks = [],
       afterRenderCallbacks = [],
       matchers = [],
-      tags = [],
       mpDebug = true,
       pDebug = false,
       sdk,
+      tags = [],
+      thirdPartyCallbacks = [],
       user
     }) {
         this.tp = sdk;

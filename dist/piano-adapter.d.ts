@@ -5,17 +5,16 @@ export default class PianoAdapter {
     tp: any;
     user: User;
     result: any;
-    sdk?: any;
     pianoDebug: boolean;
     mixpanelDebug: boolean;
-    constructor({ thirdPartyCallbacks, afterRenderCallbacks, matchers, tags, mpDebug, pDebug, sdk, user }: {
-        thirdPartyCallbacks?: any[];
+    constructor({ afterRenderCallbacks, matchers, mpDebug, pDebug, sdk, tags, thirdPartyCallbacks, user }: {
         afterRenderCallbacks?: any[];
         matchers?: any[];
-        tags?: any[];
         mpDebug?: boolean;
         pDebug?: boolean;
         sdk: any;
+        tags?: any[];
+        thirdPartyCallbacks?: any[];
         user: any;
     });
     mixpanelLog(): void;
