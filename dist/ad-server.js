@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const piano_adapter_1 = require("./piano-adapter");
 /**
  *
  *  When we decide to ad a new ad service we will have to change the type of adServicer
@@ -10,55 +9,19 @@ const piano_adapter_1 = require("./piano-adapter");
  */
 class AdServer {
     afterAdRender;
-    afterAdInit;
     beforeAdInit;
     thirdPartyCallbacks;
     matchers;
     tags;
     user;
     adServicer;
-    constructor({ afterAdRender = [], afterAdInit = [], beforeAdInit = [], matchers = [], thirdPartyCallbacks = [], tags = [], adServicer, }) {
-        this.afterAdInit = afterAdInit;
+    constructor({ afterAdRender = [], beforeAdInit = [], matchers = [], thirdPartyCallbacks = [], tags = [], adServicer, }) {
         this.afterAdRender = afterAdRender;
         this.beforeAdInit = beforeAdInit;
         this.matchers = matchers;
         this.tags = tags;
         this.thirdPartyCallbacks = thirdPartyCallbacks;
-        this.user = this.setUser();
-        this.adServicer = this.setAdapter(adServicer);
-    }
-    /**
-     * Sets up the adapter for our Ad Service
-     * Adapters api:
-     * To render a template it REQUIRES an init() method
-     * To interact with third-party services the adapter constructor REQUIRES an interface to receive an array of callbacks.
-     * To match on custom variables it MAY have tags, matchers, or user-state
-     * Lifecycle methods can be fired from the AdServer class or passed through to the Adapter.
-     *
-     * @remarks
-     * Piano lifecycle methods lives inside the window.tp object so we have to pass through callbacks.
-     * @param adServicer
-     * @returns Adapter Class
-     */
-    setAdapter(adServicer) {
-        const pianoConfig = {
-            afterRenderCallbacks: this.afterAdRender,
-            matchers: this.matchers,
-            tags: this.tags,
-            thirdPartyCallbacks: this.thirdPartyCallbacks,
-            user: this.user
-        };
-        switch (adServicer) {
-            case "piano": {
-                return new piano_adapter_1.default(pianoConfig);
-            }
-            case "atk": {
-                //configure in house AdService
-            }
-            default: {
-                return new piano_adapter_1.default(pianoConfig);
-            }
-        }
+        this.adServicer = adServicer;
     }
     /**
      * @remarks
@@ -70,26 +33,23 @@ class AdServer {
     executeAfterAdRender() {
         this.afterAdRender.forEach((cb) => cb());
     }
-    executeAfterAdInit() {
-        this.afterAdInit.forEach((cb) => cb());
-    }
-    /**
-     * Gathers needed properties and creates a configuration obj
-     *
-     * @remarks
-     * The user data could come from context or it could come from
-     * @returns User
-     */
-    setUser() {
-        return {};
+    setServicerConfig() {
+        const isEmpty = ((arr) => arr.length == 0);
+        if (!isEmpty(this.matchers))
+            this.adServicer.setMatchers(this.matchers);
+        if (!isEmpty(this.tags))
+            this.adServicer.setTags(this.tags);
+        if (!isEmpty(this.thirdPartyCallbacks))
+            this.adServicer.setThirdPartyCallbacks(this.thirdPartyCallbacks);
     }
     /**
      * Execute advertisement and lifecycle methods.
      */
     dispatchAd() {
         this.executeBeforeAdInit();
+        this.setServicerConfig();
         this.adServicer.init();
-        this.executeAfterAdInit();
+        this.executeAfterAdRender();
     }
 }
 exports.default = AdServer;
